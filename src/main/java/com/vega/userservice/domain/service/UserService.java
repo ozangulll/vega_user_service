@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Service
@@ -60,6 +61,7 @@ public class UserService implements UserDetailsService {
                 .lastName(request.getLastName())
                 .role(User.Role.USER)
                 .isActive(true)
+                .createdAt(LocalDateTime.now())
                 .build();
         
         User savedUser = userRepository.save(user);

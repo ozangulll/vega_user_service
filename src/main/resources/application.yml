@@ -22,11 +22,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
-  security:
-    user:
-      name: admin
-      password: admin123
-
 jwt:
   secret: vega-super-secret-key-change-in-production
   expiration: 86400000 # 24 hours in milliseconds
