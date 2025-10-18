@@ -1,6 +1,6 @@
-package com.vega.userservice.domain.dto;
+package com.vega.userservice.dto;
 
-import com.vega.userservice.domain.model.User;
+import com.vega.userservice.model.User;
 import lombok.Builder;
 import lombok.Data;
 

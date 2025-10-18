@@ -1,4 +1,4 @@
-package com.vega.userservice.domain.service;
+package com.vega.userservice.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -79,7 +79,8 @@ public class JwtService {
     }
     
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
+

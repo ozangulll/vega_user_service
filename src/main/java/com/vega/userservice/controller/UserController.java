@@ -1,7 +1,7 @@
-package com.vega.userservice.infrastructure.controller;
+package com.vega.userservice.controller;
 
-import com.vega.userservice.domain.dto.UserProfileResponse;
-import com.vega.userservice.domain.service.UserService;
+import com.vega.userservice.dto.UserProfileResponse;
+import com.vega.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,3 +38,4 @@ public class UserController {
         }
     }
 }
+

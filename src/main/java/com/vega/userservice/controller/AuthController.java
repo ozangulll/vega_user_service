@@ -1,9 +1,9 @@
-package com.vega.userservice.infrastructure.controller;
+package com.vega.userservice.controller;
 
-import com.vega.userservice.domain.dto.AuthResponse;
-import com.vega.userservice.domain.dto.UserLoginRequest;
-import com.vega.userservice.domain.dto.UserRegistrationRequest;
-import com.vega.userservice.domain.service.UserService;
+import com.vega.userservice.dto.AuthResponse;
+import com.vega.userservice.dto.UserLoginRequest;
+import com.vega.userservice.dto.UserRegistrationRequest;
+import com.vega.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +18,14 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody UserRegistrationRequest request) {
-        try {
-            AuthResponse response = userService.register(request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        AuthResponse response = userService.register(request);
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserLoginRequest request) {
-        try {
-            AuthResponse response = userService.login(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        AuthResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
     
     @PostMapping("/validate")
@@ -45,3 +37,4 @@ public class AuthController {
         return ResponseEntity.ok(isValid);
     }
 }
+

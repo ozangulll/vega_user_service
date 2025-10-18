@@ -1,4 +1,4 @@
-package com.vega.userservice.domain.dto;
+package com.vega.userservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     
     private String token;
+    @Builder.Default
     private String type = "Bearer";
     private Long userId;
     private String username;
@@ -19,3 +20,4 @@ public class AuthResponse {
     private String role;
     private Long expiresIn;
 }
+

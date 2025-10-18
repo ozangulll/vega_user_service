@@ -1,11 +1,11 @@
-package com.vega.userservice.domain.service;
+package com.vega.userservice.service;
 
-import com.vega.userservice.domain.dto.AuthResponse;
-import com.vega.userservice.domain.dto.UserLoginRequest;
-import com.vega.userservice.domain.dto.UserProfileResponse;
-import com.vega.userservice.domain.dto.UserRegistrationRequest;
-import com.vega.userservice.domain.model.User;
-import com.vega.userservice.domain.repository.UserRepository;
+import com.vega.userservice.dto.AuthResponse;
+import com.vega.userservice.dto.UserLoginRequest;
+import com.vega.userservice.dto.UserProfileResponse;
+import com.vega.userservice.dto.UserRegistrationRequest;
+import com.vega.userservice.model.User;
+import com.vega.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +75,7 @@ public class UserService implements UserDetailsService {
                 .username(savedUser.getUsername())
                 .email(savedUser.getEmail())
                 .role(savedUser.getRole().name())
-                .expiresIn(86400000L) // 24 hours
+                .expiresIn(60000L) // 1 minute
                 .build();
     }
     
@@ -102,7 +101,7 @@ public class UserService implements UserDetailsService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .expiresIn(86400000L) // 24 hours
+                .expiresIn(60000L) // 1 minute
                 .build();
     }
     

@@ -15,3 +15,4 @@ RUN mvn clean package -DskipTests
 # Run the application
 EXPOSE 8081
 CMD ["java", "-jar", "target/vega-user-service-1.0-SNAPSHOT.jar"]
+

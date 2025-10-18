@@ -1,4 +1,4 @@
-package com.vega.userservice.domain.dto;
+package com.vega.userservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

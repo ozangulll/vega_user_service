@@ -1,6 +1,6 @@
-package com.vega.userservice.domain.repository;
+package com.vega.userservice.repository;
 
-import com.vega.userservice.domain.model.User;
+import com.vega.userservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,3 +19,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     boolean existsByEmail(String email);
 }
+

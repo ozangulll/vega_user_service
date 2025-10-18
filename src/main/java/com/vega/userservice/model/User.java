@@ -1,4 +1,4 @@
-package com.vega.userservice.domain.model;
+package com.vega.userservice.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -60,3 +60,4 @@ public class User {
         USER, ADMIN, MODERATOR
     }
 }
+

@@ -66,3 +66,4 @@ CREATE TABLE users (
 - CORS configuration
 - Input validation
 - SQL injection prevention
+
