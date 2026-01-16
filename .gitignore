@@ -40,3 +40,4 @@ surefire-reports/
 
 # Temporary files
 tmp/
+target/
