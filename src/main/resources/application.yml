@@ -8,9 +8,9 @@ spring:
     allow-circular-references: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/vega_user_db
-    username: root
-    password: ewnlnqwmkssh52
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/vega_user_db}
+    username: ${SPRING_DATASOURCE_USERNAME:versionengineai}
+    password: ${SPRING_DATASOURCE_PASSWORD:versionengineai}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
