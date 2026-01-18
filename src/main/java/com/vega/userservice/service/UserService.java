@@ -144,4 +144,23 @@ public class UserService implements UserDetailsService {
             return false;
         }
     }
+    
+    public Long getUserIdFromToken(String token) {
+        try {
+            String username = jwtService.extractUsername(token);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+            return user.getId();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public String getUsernameFromToken(String token) {
+        try {
+            return jwtService.extractUsername(token);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

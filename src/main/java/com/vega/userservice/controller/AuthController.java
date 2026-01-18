@@ -36,5 +36,38 @@ public class AuthController {
         boolean isValid = userService.validateToken(token);
         return ResponseEntity.ok(isValid);
     }
+    
+    @PostMapping("/user-id")
+    public ResponseEntity<Long> getUserIdFromToken(@RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        try {
+            Long userId = userService.getUserIdFromToken(token);
+            if (userId != null) {
+                return ResponseEntity.ok(userId);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @PostMapping("/username")
+    public ResponseEntity<String> getUsernameFromToken(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader;
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        try {
+            String username = userService.getUsernameFromToken(token);
+            if (username != null && !username.isEmpty()) {
+                return ResponseEntity.ok(username);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
