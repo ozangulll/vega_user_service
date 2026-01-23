@@ -78,9 +78,42 @@ public class JwtService {
                 .getBody();
     }
     
+    /**
+     * Token'dan expiration time'ı çıkarır. JWT token'ın expiration claim'ini okur.
+     * Giriş: token (JWT token string)
+     * Çıktı: Expiration time (milliseconds since epoch) veya null (token geçersizse)
+     * 
+     * @param token JWT token string
+     * @return Expiration time (milliseconds) veya null
+     */
+    public Long extractExpirationTime(String token) {
+        try {
+            Date expiration = extractExpiration(token);
+            return expiration != null ? expiration.getTime() : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Token'ın geçerli olup olmadığını kontrol eder (expiration kontrolü yapmadan).
+     * Giriş: token (JWT token string)
+     * Çıktı: Token parse edilebiliyorsa true, değilse false
+     * 
+     * @param token JWT token string
+     * @return Token parse edilebiliyorsa true, değilse false
+     */
+    public boolean canParseToken(String token) {
+        try {
+            extractAllClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
     private Key getSignInKey() {
         byte[] keyBytes = secretKey.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
-

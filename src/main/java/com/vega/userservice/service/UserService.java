@@ -24,6 +24,16 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     
+    /**
+     * Kullanıcı adı veya email ile kullanıcıyı bulur ve Spring Security UserDetails objesi olarak döner.
+     * UserRepository'den kullanıcıyı çeker, UserDetails builder ile Spring Security uyumlu obje oluşturur.
+     * Giriş: username (kullanıcı adı veya email)
+     * Çıktı: UserDetails objesi (username, password, authorities, account status bilgileri içerir)
+     * 
+     * @param username Kullanıcı adı veya email
+     * @return UserDetails objesi
+     * @throws UsernameNotFoundException Kullanıcı bulunamazsa fırlatılır
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsernameOrEmail(username, username)
@@ -40,6 +50,16 @@ public class UserService implements UserDetailsService {
                 .build();
     }
     
+    /**
+     * Yeni kullanıcı kaydeder. Username ve email'in unique olduğunu kontrol eder, şifreyi BCrypt ile hash'ler,
+     * kullanıcıyı veritabanına kaydeder, JWT token oluşturur ve AuthResponse döner.
+     * Giriş: request (username, email, password, firstName, lastName)
+     * Çıktı: AuthResponse (token, userId, username, email, role, expiresIn)
+     * 
+     * @param request Kayıt isteği (username, email, password, firstName, lastName)
+     * @return AuthResponse (token ve kullanıcı bilgileri)
+     * @throws RuntimeException Username veya email zaten kullanılıyorsa fırlatılır
+     */
     @Transactional
     public AuthResponse register(UserRegistrationRequest request) {
         // Check if user already exists
@@ -101,10 +121,19 @@ public class UserService implements UserDetailsService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .expiresIn(60000L) // 1 minute
+                .expiresIn(86400000L) // 24 hours in milliseconds
                 .build();
     }
     
+    /**
+     * Kullanıcı profil bilgilerini döner. UserRepository'den kullanıcıyı çeker ve UserProfileResponse'a dönüştürür.
+     * Giriş: username
+     * Çıktı: UserProfileResponse (id, username, email, firstName, lastName, role, isActive, createdAt, updatedAt)
+     * 
+     * @param username Kullanıcı adı
+     * @return UserProfileResponse (kullanıcı profil bilgileri)
+     * @throws UsernameNotFoundException Kullanıcı bulunamazsa fırlatılır
+     */
     public UserProfileResponse getUserProfile(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
@@ -135,6 +164,14 @@ public class UserService implements UserDetailsService {
         return UserProfileResponse.fromUser(savedUser);
     }
     
+    /**
+     * JWT token'ı validate eder. Token'dan username çıkarır, kullanıcıyı yükler ve token'ın geçerliliğini kontrol eder.
+     * Giriş: token (JWT token string)
+     * Çıktı: Token geçerliyse true, değilse false
+     * 
+     * @param token JWT token string
+     * @return Token geçerliyse true, değilse false
+     */
     public boolean validateToken(String token) {
         try {
             String username = jwtService.extractUsername(token);
@@ -145,6 +182,14 @@ public class UserService implements UserDetailsService {
         }
     }
     
+    /**
+     * Token'dan user ID'yi çıkarır. Token'dan username'i alır, kullanıcıyı bulur ve ID'sini döner.
+     * Giriş: token (JWT token string)
+     * Çıktı: User ID (Long) veya null (token geçersizse veya kullanıcı bulunamazsa)
+     * 
+     * @param token JWT token string
+     * @return User ID veya null
+     */
     public Long getUserIdFromToken(String token) {
         try {
             String username = jwtService.extractUsername(token);
@@ -156,6 +201,14 @@ public class UserService implements UserDetailsService {
         }
     }
     
+    /**
+     * Token'dan username'i çıkarır. JwtService ile token'dan subject (username) çıkarılır.
+     * Giriş: token (JWT token string)
+     * Çıktı: Username string veya null (token geçersizse)
+     * 
+     * @param token JWT token string
+     * @return Username veya null
+     */
     public String getUsernameFromToken(String token) {
         try {
             return jwtService.extractUsername(token);
