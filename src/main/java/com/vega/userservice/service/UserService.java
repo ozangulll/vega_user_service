@@ -158,14 +158,15 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Search active users by username or display name. Requires at least 2 characters.
+     * Search active users by username or name (first/last/full).
+     * Requires at least 2 characters (no full directory listing).
      */
     public List<UserPublicDto> searchUsers(String query, int limit) {
         String q = query != null ? query.trim() : "";
         if (q.length() < 2) {
             return List.of();
         }
-        int cap = Math.min(Math.max(limit, 1), 50);
+        int cap = Math.min(Math.max(limit, 1), 200);
         return userRepository.searchActiveUsers(q, PageRequest.of(0, cap)).stream()
                 .map(UserPublicDto::fromUser)
                 .collect(Collectors.toList());
