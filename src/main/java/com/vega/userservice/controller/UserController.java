@@ -1,11 +1,14 @@
 package com.vega.userservice.controller;
 
+import com.vega.userservice.dto.ChangePasswordRequest;
 import com.vega.userservice.dto.UserProfileResponse;
 import com.vega.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -35,6 +38,19 @@ public class UserController {
             return ResponseEntity.ok(updatedProfile);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            Authentication authentication,
+            @RequestBody ChangePasswordRequest request) {
+        try {
+            String username = authentication.getName();
+            userService.changePassword(username, request.getCurrentPassword(), request.getNewPassword());
+            return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }
