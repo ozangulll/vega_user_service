@@ -3,6 +3,7 @@ package com.vega.userservice.service;
 import com.vega.userservice.dto.AuthResponse;
 import com.vega.userservice.dto.UserLoginRequest;
 import com.vega.userservice.dto.UserProfileResponse;
+import com.vega.userservice.dto.UserPublicDto;
 import com.vega.userservice.dto.UserRegistrationRequest;
 import com.vega.userservice.model.User;
 import com.vega.userservice.repository.UserRepository;
@@ -11,10 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -139,6 +143,32 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         
         return UserProfileResponse.fromUser(user);
+    }
+
+    /**
+     * Public profile (no email) for People directory.
+     */
+    public UserPublicDto getPublicProfile(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        if (!Boolean.TRUE.equals(user.getIsActive())) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+        return UserPublicDto.fromUser(user);
+    }
+
+    /**
+     * Search active users by username or display name. Requires at least 2 characters.
+     */
+    public List<UserPublicDto> searchUsers(String query, int limit) {
+        String q = query != null ? query.trim() : "";
+        if (q.length() < 2) {
+            return List.of();
+        }
+        int cap = Math.min(Math.max(limit, 1), 50);
+        return userRepository.searchActiveUsers(q, PageRequest.of(0, cap)).stream()
+                .map(UserPublicDto::fromUser)
+                .collect(Collectors.toList());
     }
     
     @Transactional

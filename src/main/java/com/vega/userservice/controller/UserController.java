@@ -2,12 +2,15 @@ package com.vega.userservice.controller;
 
 import com.vega.userservice.dto.ChangePasswordRequest;
 import com.vega.userservice.dto.UserProfileResponse;
+import com.vega.userservice.dto.UserPublicDto;
 import com.vega.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +20,22 @@ public class UserController {
     
     private final UserService userService;
     
+    @GetMapping("/search")
+    public ResponseEntity<List<UserPublicDto>> searchUsers(
+            @RequestParam(value = "q", defaultValue = "") String q,
+            @RequestParam(value = "limit", defaultValue = "30") int limit) {
+        return ResponseEntity.ok(userService.searchUsers(q, limit));
+    }
+
+    @GetMapping("/by-username/{username}")
+    public ResponseEntity<UserPublicDto> getPublicByUsername(@PathVariable String username) {
+        try {
+            return ResponseEntity.ok(userService.getPublicProfile(username));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getUserProfile(Authentication authentication) {
         try {
