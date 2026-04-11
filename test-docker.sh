@@ -78,34 +78,38 @@ curl -s http://localhost:8085/actuator/health | jq . || curl -s http://localhost
 echo ""
 echo ""
 
-# 6. Login Test
+# 6. Login Test (tüm seed kullanıcılar)
 echo "========================================="
-echo "🔐 Login Test (versionengineai / versionengineai)"
+echo "🔐 Login Test (versionengineai, defaultuser, developer1, reviewer1)"
 echo "========================================="
 echo ""
 
-RESPONSE=$(curl -s -X POST http://localhost:8085/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "usernameOrEmail": "versionengineai",
-    "password": "versionengineai"
-  }')
+TOKEN=""
+for USERNAME in versionengineai defaultuser developer1 reviewer1; do
+  echo "→ $USERNAME / $USERNAME"
+  RESPONSE=$(curl -s -X POST http://localhost:8085/api/auth/login \
+    -H "Content-Type: application/json" \
+    -d "{\"usernameOrEmail\": \"$USERNAME\", \"password\": \"$USERNAME\"}")
 
-echo "Response:"
-echo "$RESPONSE" | jq . 2>/dev/null || echo "$RESPONSE"
-echo ""
+  echo "$RESPONSE" | jq . 2>/dev/null || echo "$RESPONSE"
+  echo ""
 
-TOKEN=$(echo "$RESPONSE" | jq -r '.token' 2>/dev/null || echo "")
-
-if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-    echo "❌ Login başarısız! Token alınamadı."
+  T=$(echo "$RESPONSE" | jq -r '.token' 2>/dev/null || echo "")
+  if [ -z "$T" ] || [ "$T" = "null" ]; then
+    echo "❌ Login başarısız ($USERNAME)! Token alınamadı."
     echo "Logs:"
     docker compose logs user-service | tail -20
     exit 1
-fi
+  fi
+  echo "✅ OK"
+  echo ""
+  if [ "$USERNAME" = "versionengineai" ]; then
+    TOKEN="$T"
+  fi
+done
 
-echo "✅ Login başarılı! Token alındı."
-echo "Token: ${TOKEN:0:50}..."
+echo "✅ Tüm seed kullanıcılar ile giriş başarılı."
+echo "Token (versionengineai): ${TOKEN:0:50}..."
 echo ""
 
 # 7. Token Validation Test
