@@ -99,6 +99,31 @@ public class AuthController {
      * @param authHeader Authorization header (Bearer prefix'i otomatik kaldırılır)
      * @return ResponseEntity<String> (200 OK veya 404 Not Found)
      */
+    /**
+     * Combined user-info endpoint — returns userId + username in one call.
+     * Push/Pull services call this instead of separate /user-id + /username + /validate.
+     */
+    @PostMapping("/user-info")
+    public ResponseEntity<java.util.Map<String, Object>> getUserInfo(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader;
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        try {
+            if (!userService.validateToken(token)) {
+                return ResponseEntity.status(401).build();
+            }
+            Long userId = userService.getUserIdFromToken(token);
+            String username = userService.getUsernameFromToken(token);
+            if (userId == null || username == null || username.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(java.util.Map.of("userId", userId, "username", username, "valid", true));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
     @PostMapping("/username")
     public ResponseEntity<String> getUsernameFromToken(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader;
