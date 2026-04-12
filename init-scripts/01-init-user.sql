@@ -1,7 +1,7 @@
--- Initialize database
--- This script runs only on first container startup
--- Note: Initial users (versionengineai, defaultuser, developer1, reviewer1;
---       each with password equal to username) are created automatically
---       by DataInitializer.java on Spring Boot application startup
+-- Initialize database (first MySQL container start only).
+-- Application users are NOT inserted here — they are created by
+-- com.vega.userservice.config.DataInitializer from com.vega.userservice.config.SeedUsers
+-- (single source of truth). After changing SeedUsers.java, sync: test-docker.sh,
+-- start-all-services.sh hints, README-Docker.md.
 
 USE vega_user_db;

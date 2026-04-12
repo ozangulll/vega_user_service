@@ -10,11 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * Data Initializer
- * Creates default application users on startup if they do not exist.
+ * Creates {@linkplain SeedUsers dev seed users} on startup if they do not exist.
  */
 @Component
 @RequiredArgsConstructor
@@ -24,24 +22,15 @@ public class DataInitializer implements ApplicationRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private record SeedUser(String username, String password, String email, String firstName, String lastName) {}
-
-    private static final List<SeedUser> SEED_USERS = List.of(
-            new SeedUser("versionengineai", "versionengineai", "versionengineai@vega.local", "Version", "Engine AI"),
-            new SeedUser("defaultuser", "defaultuser", "defaultuser@vega.local", "Default", "User"),
-            new SeedUser("developer1", "developer1", "developer1@vega.local", "Developer", "One"),
-            new SeedUser("reviewer1", "reviewer1", "reviewer1@vega.local", "Reviewer", "One")
-    );
-
     @Override
     public void run(ApplicationArguments args) {
         LocalDateTime now = LocalDateTime.now();
-        for (SeedUser seed : SEED_USERS) {
+        for (SeedUsers.Spec seed : SeedUsers.all()) {
             if (!userRepository.existsByUsername(seed.username())) {
                 User user = User.builder()
                         .username(seed.username())
                         .email(seed.email())
-                        .passwordHash(passwordEncoder.encode(seed.password()))
+                        .passwordHash(passwordEncoder.encode(seed.plainPassword()))
                         .firstName(seed.firstName())
                         .lastName(seed.lastName())
                         .role(User.Role.USER)
@@ -50,7 +39,7 @@ public class DataInitializer implements ApplicationRunner {
                         .updatedAt(now)
                         .build();
                 userRepository.save(user);
-                log.info("✅ Seed user created: {} / {}", seed.username(), seed.password());
+                log.info("✅ Seed user created: {} / {}", seed.username(), seed.plainPassword());
             } else {
                 log.info("ℹ️  Seed user already exists: {}", seed.username());
             }

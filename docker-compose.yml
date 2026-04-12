@@ -6,6 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: vega_user_db
+      # JDBC DB user (not the same as seed app users, but often matches PRIMARY dev user — see SeedUsers.java)
       MYSQL_USER: versionengineai
       MYSQL_PASSWORD: versionengineai
     ports:

@@ -12,6 +12,9 @@ echo ""
 
 cd "$(dirname "$0")"
 
+# Must match com.vega.userservice.config.SeedUsers.all() (dev: password equals username)
+SEED_USERNAMES=(versionengineai defaultuser developer1 reviewer1)
+
 # 1. Eski container'ları temizle
 echo "📦 Eski container'ları temizliyorum..."
 docker compose down -v 2>/dev/null || true
@@ -80,12 +83,12 @@ echo ""
 
 # 6. Login Test (tüm seed kullanıcılar)
 echo "========================================="
-echo "🔐 Login Test (versionengineai, defaultuser, developer1, reviewer1)"
+echo "🔐 Login Test (${SEED_USERNAMES[*]})"
 echo "========================================="
 echo ""
 
 TOKEN=""
-for USERNAME in versionengineai defaultuser developer1 reviewer1; do
+for USERNAME in "${SEED_USERNAMES[@]}"; do
   echo "→ $USERNAME / $USERNAME"
   RESPONSE=$(curl -s -X POST http://localhost:8085/api/auth/login \
     -H "Content-Type: application/json" \

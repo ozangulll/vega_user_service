@@ -2,6 +2,8 @@
 
 Bu dokümantasyon vega_user_service'i Docker ile çalıştırma adımlarını içerir.
 
+**Seed (örnek) kullanıcılar:** Tek kaynak `src/main/java/com/vega/userservice/config/SeedUsers.java`. Listeyi veya şifre kuralını değiştirirseniz `test-docker.sh`, repo kökündeki `start-all-services.sh` ve `init-scripts/01-init-user.sql` yorumlarını da güncelleyin.
+
 ## 🚀 Hızlı Başlangıç
 
 ### 1. Docker Compose ile Çalıştırma
@@ -15,7 +17,7 @@ Bu komut:
 - MySQL veritabanını başlatır (port 3306)
 - User Service'i build eder ve başlatır (port 8085)
 - Veritabanı otomatik oluşturulur
-- Hazır kullanıcı otomatik oluşturulur: `versionengineai` / `versionengineai`
+- Hazır kullanıcılar uygulama açılışında oluşturulur (varsayılan ana hesap: `versionengineai` / `versionengineai` — ayrıntı `SeedUsers.java`)
 
 ### 2. Servisleri Kontrol Etme
 
